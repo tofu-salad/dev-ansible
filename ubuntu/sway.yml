@@ -27,7 +27,28 @@
       - waybar
       - swayidle
       - swaylock
+      - xdg-desktop-portal-wlr
     state: present
+
+- name: test if file "fixed-sway.desktop" exists
+  become: true
+  shell: test -f /usr/share/wayland-sessions/fixed-sway.desktop
+  register:
+    fixed_sway_exists
+  ignore_errors: true
+
+- name: write new file "fixed-sway.desktop" file
+  become: true
+  blockinfile:
+    path: /usr/share/wayland-sessions/fixed-sway.desktop
+    create: true
+    block:  |
+      [Desktop Entry]
+      Name=Fixed Sway
+      Comment=An i3-compatible Wayland compositor
+      Exec=env XDG_CURRENT_DESKTOP=sway sway
+      Type=Application
+  when: fixed_sway_exists is failed
 
 - name: Check if wezterm is installed
   shell: command -v wezterm
@@ -51,3 +72,4 @@
       wezterm
     state: present
   when: wezterm_exists is failed
+
