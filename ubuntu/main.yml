@@ -1,0 +1,27 @@
+---
+- name: Neovim
+  include_tasks: neovim.yml
+
+- name: Sway
+  include_tasks: sway.yml
+
+- name: Github CLI
+  include_tasks: github_cli.yml
+
+- name: Check if user is logged in in GitHub
+  shell: gh auth status
+  register: gh_auth_status
+  failed_when: "'You are not logged' in gh_auth_status.stderr"
+  ignore_errors: yes
+
+- name: Print error message if he is not logged in.
+  debug:
+    msg: "You are not logged into any GitHub hosts. To log in, run: gh auth login"
+  when: "'You are not logged' in gh_auth_status.stderr"
+
+- name: Dotfiles
+  include_tasks: dotfiles.yml
+  when: "'Logged in' is in gh_auth_status.stdout"
+
+- name: Dev Packages
+  include_tasks: dev/main.yml

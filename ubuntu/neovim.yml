@@ -1,0 +1,36 @@
+---
+- name: Check if Neovim is installed
+  shell: command -v nvim
+  register: nvim_exists
+  ignore_errors: yes
+
+- name: Install Neovim dependencies
+  become: true
+  ansible.builtin.apt:
+        pkg:
+          - ninja-build
+          - gettext
+          - cmake
+          - unzip
+          - curl
+          - build-essential
+          - git
+
+- name: Clone Neovim repo
+  ansible.builtin.git:
+    repo: "https://github.com/neovim/neovim"
+    dest: "{{ neovim_repo }}"
+  when: nvim_exists is failed
+
+- name: Try to build and chdir
+  ansible.builtin.command: make CMAKE_BUILD_TYPE=Release
+  args: 
+    chdir: "{{ neovim_repo }}"
+  when: nvim_exists is failed
+
+- name: Install Neovim
+  become: true
+  ansible.builtin.command: sudo make install
+  args:
+    chdir: "{{ neovim_repo }}"
+  when: nvim_exists is failed

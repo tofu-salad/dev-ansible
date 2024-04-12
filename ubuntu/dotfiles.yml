@@ -1,0 +1,34 @@
+---
+
+- name: Check if the "dotfiles" alias exists in .bash_aliases
+  shell: "grep -q 'dotfiles=' ~/.bash_aliases"
+  ignore_errors: yes
+  register: alias_check
+
+- name: Scan GitHub SSH key
+  shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+  args:
+    creates: "{{ home_dir }}/.ssh/known_hosts"
+  register: keyscan_output
+  changed_when: keyscan_output.rc == 0
+  when: alias_check is failed
+
+- name: Add .dotfiles to .gitignore
+  ansible.builtin.command: echo ".dotfiles" >> "{{ home_dir }}/.gitignore"
+  when: alias_check is failed
+
+- name: Clone .dotfiles repo
+  ansible.builtin.git:
+    repo: git@github.com:soda-zero/.dotfiles.git
+    dest: "{{ home_dir }}/.dotfiles"
+    bare: yes
+  when: alias_check is failed
+
+- name: Disable showing untracked files locally
+  ansible.builtin.shell: $(which git) --git-dir={{ home_dir }}/.dotfiles/ --work-tree={{ home_dir }} config --local status.showUntrackedFiles no
+  when: alias_check is failed
+
+- name: Checkout configuration
+  ansible.builtin.shell: |
+    $(which git) --git-dir={{ home_dir }}/.dotfiles/ --work-tree={{ home_dir }} checkout
+  when: alias_check is failed

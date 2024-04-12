@@ -1,0 +1,53 @@
+- name: Install Display Manager
+  become: true
+  ansible.builtin.apt:
+    name:
+      - sddm
+    state: present
+
+      # - name: Change default Display Manager
+      # become: true
+      # ansible.builtin.command: sudo dpkg-reconfigure sddm
+
+- name: Install Sway
+  become: true
+  ansible.builtin.apt:
+    name: sway
+    state: present
+
+- name: Install Sway Utilities
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - wofi
+      - swayimg
+      - grim
+      - slurp
+      - swaybg
+      - waybar
+      - swayidle
+      - swaylock
+    state: present
+
+- name: Check if wezterm is installed
+  shell: command -v wezterm
+  register: wezterm_exists
+  ignore_errors: yes
+
+- name: Configure WezTerm repo
+  become: true
+  ansible.builtin.shell: |
+    curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+    echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
+    sudo apt update
+  args:
+    chdir: "{{ tmp_dir }}"
+  when: wezterm_exists is failed
+
+- name: Install WezTerm
+  become: true
+  ansible.builtin.apt:
+    name:
+      wezterm
+    state: present
+  when: wezterm_exists is failed
