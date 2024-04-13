@@ -43,3 +43,9 @@
       gh
     state: present
   when: gh_exists is failed
+
+- name: Config Git User
+  shell: |
+    git config --global user.name "soda zero"
+    git config --global user.email "soda.zero.sip@proton.me"
+  when: gh_exists is failed
