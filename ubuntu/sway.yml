@@ -28,6 +28,7 @@
       - swayidle
       - swaylock
       - xdg-desktop-portal-wlr
+      - dunst
     state: present
 
 - name: test if file "fixed-sway.desktop" exists
