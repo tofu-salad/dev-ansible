@@ -27,10 +27,7 @@
 
 - name: Add GitHub CLI repository to sources.list.d
   become: true
-  ansible.builtin.lineinfile:
-    path: /etc/apt/sources.list.d/github-cli.list
-    line: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
-    create: yes
+  ansible.builtin.shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
   when: gh_exists is failed
 
 - name: Update package cache
@@ -40,6 +37,7 @@
   when: gh_exists is failed
 
 - name: Install Github CLI
+  become: true
   ansible.builtin.apt:
     name:
       gh
