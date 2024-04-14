@@ -7,4 +7,5 @@
       - tmux
       - jq
       - fzf
+      - fd-find
     state: present
