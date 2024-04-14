@@ -11,3 +11,6 @@
     - name: Ubuntu
       include_tasks: ubuntu/main.yml
       when: ansible_facts['distribution'] == "Ubuntu"
+   
+    - name: theming
+      include_tasks: ./theming/nerdont.yml

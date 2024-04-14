@@ -1,14 +1,3 @@
-- name: Install Display Manager
-  become: true
-  ansible.builtin.apt:
-    name:
-      - sddm
-    state: present
-
-      # - name: Change default Display Manager
-      # become: true
-      # ansible.builtin.command: sudo dpkg-reconfigure sddm
-
 - name: Install Sway
   become: true
   ansible.builtin.apt:
@@ -19,6 +8,7 @@
   become: true
   ansible.builtin.apt:
     pkg:
+      - wl-clipboard
       - wofi
       - swayimg
       - grim
@@ -29,6 +19,7 @@
       - swaylock
       - xdg-desktop-portal-wlr
       - dunst
+      - pavucontrol
     state: present
 
 - name: test if file "fixed-sway.desktop" exists

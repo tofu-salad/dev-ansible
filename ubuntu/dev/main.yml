@@ -1,3 +1,9 @@
 ---
 - name: Rust
   include_tasks: rust.yml
+
+- name: Go
+  include_tasks: go.yml
+
+- name: Node
+  include_tasks: node.yml

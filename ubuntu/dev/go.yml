@@ -1,23 +1,24 @@
 ---
-tasks:
 - name: check if go is installed
   shell: command -v go
   register: go_exists
   ignore_errors: yes
 
-- name: Download Installer
-  when: cargo_exists is failed
+- name: download installer
   get_url:
-    url: https://sh.rustup.rs
-    dest: /tmp/sh.rustup.rs
+    url: https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
+    dest: "{{ tmp_dir }}/go1.22.2.linux-amd64.tar.gz"
     mode: '0755'
-    force: 'yes'
-  tags:
-    - rust
+  when: go_exists is failed
 
-- name: install rust/cargo
-  when: cargo_exists is failed
-  shell: /tmp/sh.rustup.rs -y
-  tags:
-    - rust
+- name: remove previous installations
+  shell: rm -rf /usr/local/go
+  become: true
+  when: go_exists is failed
 
+- name: extract Go into /usr/local
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ tmp_dir }}/go1.22.2.linux-amd64.tar.gz"
+    dest: /usr/local/
+  when: go_exists is failed
