@@ -22,3 +22,8 @@
     src: "{{ tmp_dir }}/go1.22.2.linux-amd64.tar.gz"
     dest: /usr/local/
   when: go_exists is failed
+
+- name: clear downloaded go file
+  ansible.builtin.file:
+    path: "{{ tmp_dir }}/go1.22.2.linux-amd64.tar.gz"
+    state: absent

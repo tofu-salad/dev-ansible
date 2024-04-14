@@ -1,0 +1,23 @@
+---
+- name: check if node is installed
+  shell: command -v node
+  register: node_exists
+  ignore_errors: yes
+
+- name: install nvm
+  shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    executable: /bin/bash
+    chdir: "{{ home_dir }}"
+    creates: "{{ home_dir }}/.nvm/nvm.sh"
+  when: node_exists is failed
+
+- name: Install node
+  shell: . {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install {{ item }}
+  args:
+    executable: /bin/bash
+    chdir: "{{ ansible_env.HOME }}"
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/{{ item }}"
+  loop:
+    - lts
+  when: node_exists is failed

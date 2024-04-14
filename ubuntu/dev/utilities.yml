@@ -1,0 +1,10 @@
+--- 
+- name: common dev utilities
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - ripgrep
+      - tmux
+      - jq
+      - fzf
+    state: present

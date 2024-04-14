@@ -1,0 +1,34 @@
+---
+- name: check if blexmono nerdfont exists
+  ansible.builtin.shell: fc-list | grep -i "BlexMono"
+  register: blex_mono_exists
+  ignore_errors: yes
+
+- name: download blex mono
+  get_url:
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/IBMPlexMono.zip
+    dest: "{{ tmp_dir }}/IBMPlexMono.zip"
+  when: blex_mono_exists is failed
+
+- name: create blex mono folder
+  ansible.builtin.file:
+    path: "{{ home_dir }}/.local/share/fonts/IBMPlexMono"
+    state: directory
+    mode: '0755'
+  when: blex_mono_exists is failed
+
+- name: extract blex mono
+  ansible.builtin.unarchive:
+    src: "{{ tmp_dir }}/IBMPlexMono.zip"
+    dest: "{{ home_dir }}/.local/share/fonts/IBMPlexMono"
+  when: blex_mono_exists is failed
+
+- name: fc-cache
+  ansible.builtin.shell: fc-cache
+  when: blex_mono_exists is failed
+
+- name: clear downloaded font
+  ansible.builtin.file:
+    path: "{{ tmp_dir }}/IBMPlexMono.zip"
+    state: absent
+  when: blex_mono_exists is failed
