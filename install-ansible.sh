@@ -8,5 +8,5 @@ sudo apt install pipx -y
 pipx ensurepath
 
 # Install Ansible
-pipx install --include-deps ansible
+pipx install --include-deps ansible --force
 pipx inject ansible argcomplete
