@@ -13,4 +13,4 @@
       when: ansible_facts['distribution'] == "Ubuntu"
    
     - name: theming
-      include_tasks: ./theming/nerdont.yml
+      include_tasks: ./theming/nerdfont.yml

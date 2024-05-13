@@ -18,6 +18,7 @@
       - swayidle
       - swaylock
       - xdg-desktop-portal-wlr
-      - sway-notification-center
+      - dunst
       - pavucontrol
+      - eza
     state: present
