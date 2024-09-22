@@ -46,6 +46,6 @@
 
 - name: Config Git User
   shell: |
-    git config --global user.name "soda zero"
-    git config --global user.email "soda.zero.sip@proton.me"
+    git config --global user.name "tofu salad""
+    git config --global user.email "tofu salad"
   when: gh_exists is failed
