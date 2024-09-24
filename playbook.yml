@@ -4,8 +4,8 @@
   gather_facts: true
   vars:
     home_dir: "{{ lookup('env', 'HOME') }}"
-    tmp_dir: "{{ home_dir }}/Tmp"
-    neovim_repo: "{{ home_dir }}/Tmp/repos/neovim"
+    tmp_dir: "{{ home_dir }}/.tmp"
+    neovim_repo: "{{ tmp_dir }}/repos/neovim"
     
   tasks:
     - name: Ubuntu
